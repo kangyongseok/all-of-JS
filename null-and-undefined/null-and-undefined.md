@@ -38,6 +38,9 @@ var dataBool = false;
 
 // Object 초기화
 var dataObj = null;
+
+// Array 초기화
+var dataArray = [];
 ```
 
 이렇게 초기화한 방식을 보고 데이터의 타입을 알 수 있습니다.
