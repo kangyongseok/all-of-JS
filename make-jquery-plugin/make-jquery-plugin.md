@@ -56,10 +56,113 @@ javascript 에서 class 를 만들어 사용할때와 비슷한데
 
 ---
 
-class 기반 플러그인 만들기
+플러그인 만들기
 ---
 
 tab Menu 플러그인을 제작해 보겠습니다.
+
+## HTML
+
+```html
+<script>
+    $(document).ready(function() {
+        $(".tab-area ul li").tabClick("#2196F3");
+    })
+</script>
+
+<div class="wrap">
+    <div class="tab-area">
+        <ul>
+            <li class="visible">TAB MENU 1</li>
+            <li>TAB MENU 2</li>
+            <li>TAB MENU 3</li>
+            <li>TAB MENU 4</li>
+        </ul>
+        <div class="tab-underbar js-tab-underbar"></div>
+    </div>
+    <div class="contents">
+        <div class="cont-box visible">contents box 1</div>
+        <div class="cont-box">contents box 2</div>
+        <div class="cont-box">contents box 3</div>
+        <div class="cont-box">contents box 4</div>
+    </div>
+</div>
+```
+
+## CSS
+
+```css
+* {
+    margin:0;
+    padding:0;
+}
+
+html,
+body {
+    width:100%;
+    height:100%;
+    font-family:Roboto, sans-serif;
+    background: #212121
+}
+
+.wrap {
+    width:50%;
+    margin:10% auto;
+    box-shadow: 2px 2px 15px 5px #ffffff;
+}
+
+.tab-area,
+.contents {
+    background: #424242;
+}
+
+.tab-area ul {
+    list-style:none;
+    display:flex;
+}
+
+
+.tab-area ul li {
+    color:white;
+    cursor:pointer;
+    padding:1rem 2rem;
+}
+
+.tab-underbar {
+    width:155px;
+}
+
+
+.contents {
+    border-top:1px solid white;
+    height:200px;
+    font-size:1.2rem;
+    display: flex;
+    flex-direction:row;
+    flex-wrap: nowrap;
+    
+    
+}
+
+.cont-box {
+    width:100%;
+    color:white;
+    margin:2rem;
+    display: none;
+
+}
+
+.visible {
+    display: block;
+}
+
+.b1 {
+    flex-grow: 1;
+}
+```
+
+
+## JS
 
 ```javascript
 
