@@ -317,3 +317,51 @@ $(".tab-area ul").tabClick("#2196F3");
 
 색상도 인자값으로 받아 원하는 탭의 색상을 지정 할 수 있습니다.
 
+---
+
+extend() 메소드를 통한 옵션 확장
+---
+
+jQuery 를 사용하다보면 내부에서 옵션을 지정하는 경우가 있습니다. 슬라이드의 속도나 이벤트의 on/off 등 이있는데 이러한 옵션을 지정할 수 있는 코드를 추가합니다. 
+
+extend() 메소드를 사용하고 기존객체와 사용자 옵션으로 받은 객체를 합쳐주면서 옵션지정한 쪽이 우선적용됩니다.
+
+우선 디폴트 옵션 추가합니다.
+
+tabMenu 에서 옵션으로 빼줄만한건 색상변경부분과 메뉴바의 이동속도정도 될것같습니다.
+
+```javascript
+// 디폴트 옵션
+$.defaultOptions = {
+    color:"black",
+    bardelay: 200
+}
+```
+
+그리고 $.fn 에 option 인자를 추가하고 option에는 extend() 를 사용하여 3개의 인자를 받는데 첫번째는 extend() 적용시 this 의 target이 변경되는걸 방지합니다.
+
+```javascript
+$.fn.tabClick = function(options) {
+    options = $.extend(null, $.defaultOptions, options);
+    this.each(function() {
+        var tabMenuInstence = new TabMenu();
+        tabMenuInstence.init(this, options);
+        console.log(tabMenuInstence);
+    })
+}
+```
+
+마지막으로 color 인자를 받던 부분은 option 으로 수정하고
+
+색상과 애니메이션의 속도를 받는 코드에서는 
+
+```option.color / option.bardelay``` 로 수정합니다.
+
+플러그인 사용은 아래와 같습니다.
+
+```javascript
+$(".tab-area ul").tabClick({
+    color:"#2196F3",
+    bardelay:500
+});
+```
