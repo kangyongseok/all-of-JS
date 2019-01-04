@@ -199,8 +199,121 @@ body {
     }
 })(jQuery)
 
-
-
 ```
 
+---
+
+CLASS 기반 플러그인 짜기
+---
+
+위와 같은 형태로 짜도 동작은 하지만 직접 만들어 사용하는 플러그인인 만큼 기능의 추가나 삭제 수정 또한 편해야 합니다.
+
+그러나 위의 JS 코드는 나중에 제가 다시봐도 사실 수정을 어디서부터 어떻게 건드려야할지 잘 모를것같습니다.
+
+나름 정리한다고 주석도 달고는 했지만 어디서부터 어디까지가 어떤 역할을 하는지에 대해서 한눈에 파악하기 어려운점도 있습니다.
+
+그래서 기능도 추가하기 쉽고 가독성도 좋으면서 어느 부분이 어떤 역할과 기능을 맡아서 하는지 그리고 추가적으로 TAB MENU 를 적용해도 아무 문제 없이 사용 할 수 있도록 CLASS 기반 플러그인으로 수정하도록 하겠습니다.
+
+JS
+
+```javascript
+// CLASS 기반 플러그인 만들기
+
+(function($) {
+    // 클래스 정의
+    function TabMenu() {
+        this.tabMenu = null;
+        this.tabMenuLi = null;
+        this.tabMenuBar = null;
+        this.tabContents = null;
+        this.tabContentsDiv = null;
+    };
+
+    // selector 지정
+    TabMenu.prototype.init = function(selector, color) {
+        this.tabMenu = $(selector);
+        this.tabMenuLi = this.tabMenu.children();
+        this.tabMenuFirstNode = this.tabMenuLi[0]
+        this.tabMenuBar = this.tabMenu.siblings();
+        this.tabContents = this.tabMenu.parent().siblings();
+        this.tabContentsDiv = this.tabContents.children();
+        this.tabContentsFirstDiv = this.tabContentsDiv[0];
+        this.initEvent(color);
+    };
+
+    // 이벤트 실행 
+    TabMenu.prototype.initEvent = function(color) {
+        var that = this;
+        this.initBase(color);
+        _.map(this.tabMenuLi, function(tabMenuLi, index) {
+            that.clickTab(that, tabMenuLi, color, index);
+        })
+    };
+
+    // 기본 디자인 (컬러값 받아옴)
+    TabMenu.prototype.initBase = function(color) {
+        $(this.tabMenuFirstNode).addClass("on");
+        _.map(this.tabMenuLi, function(tabMenuLi) {
+            if($(tabMenuLi).hasClass("on")) {
+                $(tabMenuLi).css("color", color)
+            }
+        });
+        $(this.tabContentsFirstDiv).addClass("visible");
+        $(this.tabMenuBar).css("border-top", "3px solid " + color)
+    };
+
+    // 클릭 이벤트 생성
+    TabMenu.prototype.clickTab = function(that, tabMenuLi, color, index) {
+        $(tabMenuLi).click(function() {
+            that.tabEvent(tabMenuLi, color)
+            that.tabContent(that, index);
+            that.tabBarEvent(that, index);
+        })
+    };
+
+    // 클릭시 발생할 탭 메뉴의 이벤트
+    TabMenu.prototype.tabEvent = function(tabMenuLi, color) {
+        $(tabMenuLi).addClass("on");
+        $(tabMenuLi).siblings().removeClass("on");
+        if($(tabMenuLi).hasClass("on")) {
+            $(tabMenuLi).css("color", color);
+            $(tabMenuLi).siblings().css("color", "white");
+        }
+    }
+
+    // 클릭시 발생할 tabBar 의 이벤트
+    TabMenu.prototype.tabBarEvent = function(that, index) {
+        var barWidth = that.tabMenuBar.outerWidth();
+        $(that.tabMenuBar).animate({marginLeft:barWidth * index}, 200)
+    }
+
+    // 클릭시 발생할 contents 의 상태
+    TabMenu.prototype.tabContent = function(that, index) {
+        $($(that.tabContentsDiv)[index]).addClass("visible");
+        $($(that.tabContentsDiv)[index]).siblings().removeClass("visible");
+    }
+
+    // 인스턴스 생성
+    $.fn.tabClick = function(color) {
+        this.each(function() {
+            var tabMenuInstence = new TabMenu();
+            tabMenuInstence.init(this, color);
+            console.log(tabMenuInstence);
+        })
+    }
+})(jQuery)
+
+```
+기존보다 라인은 좀 길어졌습니다.  
+그러나 기존보다 기능을 추가하거나 수정 삭제하기는 훨씬 쉬워졌습니다.  
+underscore.js 를 같이 사용해서 편의성읖 높였습니다.  
+jQuery 에 의존성은 가지지만 그만큼 브라우져호환에 있어서는 믿을만한 플러그인을 만들 수 있습니다.
+
+사용법은 아래와 같습니다.
+
+```javascript
+$(".tab-area ul").tabClick("#2196F3");
+```
+
+색상도 인자값으로 받아 원하는 탭의 색상을 지정 할 수 있습니다.
 
