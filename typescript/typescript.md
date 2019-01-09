@@ -74,7 +74,6 @@ function whatIsThis(): never {
 
 배열
 ---
-
 ```javascript
 const numArray: number[] = [0, 1, 2, 3, 4, 5, 6];
 const strArray: string[] = ["JavaScript", "Node.js", "MongoDB"];
@@ -186,4 +185,85 @@ interface NoThis {
 const noThis: NoThis = function() {
     console.log(this.a)
 }
+```
+
+---
+
+Interface
+---
+
+- 값이 특정한 형태를 갖도록 제약하는것
+
+```javascript       
+interface User {
+    name: string;
+    age: number;
+}
+```
+
+- 읽기 전용 속성 또는 선택속성으로 정의 가능
+
+```javascript  
+interface User {
+    name: string;
+    readonly age: number;
+    language? : string;
+}
+const author: User = {name: "CodeReading", age: 32};
+author.age = 40; // error
+```
+
+**함수인터페이스**
+
+```(매개변수1 이름: 매개변수1 타입, 매개변수2 이름: 매개변수2 타입, ...): 반환타입```
+
+- User 타입의 값 user를 받아 이름을 반환하는 함수 인터페이스
+
+```javascript  
+interface GetUserName {
+    (user: User): string;
+}
+const getUserName: GetUserName = function(user) {
+    return user.name;
+}
+```
+
+**하이브리드 타입**
+
+- jQuery 의 $ 와 같은 호출가능한 동시에 추가적으로 여러 속성을 갖는 객체에 대한 타입 표현
+
+```javascript
+interface Counter {
+    (start: number): string;
+    interval: number;
+    reset(): void;
+}
+function getCounter(): Counter {
+    let counter = <Counter>function (start: number) { };
+    counter.interval = 123;
+    counter.reset = function () { };
+    return counter;
+}
+let c = getCounter();
+c(10);
+c.reset();
+c.interval = 5.0;
+```
+
+**제너릭 인터페이스**
+
+- 인터페이스 뒤에 타입 변수 정의를 붙여 제너릭 인터페이스를 정의
+
+```javascript  
+interface MyResponse<Data> {
+    data: Data;
+    status: number;
+    ok: boolean;
+}
+interface User {
+    name: string;
+    readonly age: number;
+}
+const user: MyResponse<User> = await getUserApiCall(userId);
+user.name;
 ```
