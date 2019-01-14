@@ -158,3 +158,89 @@ child1.method();
 - 객체지향 프로그래밍 네가지 특징중 유일하게 클래스 상속은 지원
 - 프로토 타입을 통해 상속 구현
 
+
+오버라이드
+---
+
+자식클래스에서 부모클래스의 기능을 재정의할때 사용
+
+- 부모클래스의 기능을 사용하지않고 자식클래스에서 구현한 기능을 사용하고 싶은경우
+- 부모클래스의 기능을 자식클래스에서 확장하고 싶은경우
+
+**기존에 부모의 method 를 그대로 받아 사용하는경우**
+
+```javascript
+function MyParent() {
+    this.property1 = "data1";
+    console.log("MyParent()")
+}
+MyParent.prototype.method1 = function() {
+    console.log("property1 = " + this.property1);
+}
+
+function MyChild() {
+    console.log("MyChild()");
+}
+MyChild.prototype = new MyParent();
+MyChild.prototype.constructor = MyChild;
+
+var child1 = new MyChild();
+child1.method1();
+```
+
+**부모의 method가 아닌 자식클래스에서 재정의한 method 로 실행**
+
+```javascript
+function MyParent() {
+    this.property1 = "data1";
+    console.log("MyParent()")
+}
+MyParent.prototype.method1 = function() {
+    console.log("property1 = " + this.property1);
+}
+
+function MyChild() {
+    console.log("MyChild()");
+}
+MyChild.prototype = new MyParent();
+MyChild.prototype.constructor = MyChild;
+
+
+// 오버라이드
+MyChild.prototype.method1 = function() {
+    console.log(`프로퍼티 1은 ${this.property1} 입니다.`)
+}
+
+var child1 = new MyChild();
+child1.method1();
+```
+
+**부모 클래스의 기능을 자식 클래스에서 확장**
+
+```javascript
+function MyParent() {
+    this.property1 = "data1";
+    console.log("MyParent()")
+}
+
+MyParent.prototype.info = function() {
+    console.log(`property ${this.property1}`);
+}
+
+function MyChild() {
+    console.log("MyChild()");
+    this.property2 = "data2";
+}
+
+MyChild.prototype = new MyParent();
+MyChild.prototype.constuctor = MyChild;
+
+// 기능확장
+MyChild.prototype.info = function() {
+    MyParent.prototype.info.call(this);
+    console.log(`property2 = ${this.property2}`);
+}
+
+var child1 = new MyChild();
+child1.info();
+```
